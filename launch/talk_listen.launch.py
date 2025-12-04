@@ -15,7 +15,7 @@ def generate_launch_description():
             executable = 'listener',
             output = 'screen'
             )
-    
+
     return launch.LaunchDescription([talker, listener])
 
 
