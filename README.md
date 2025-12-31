@@ -11,7 +11,8 @@
 - Python 3.10
 - 依存ライブラリ: `psutil`
 
-##　ダウンロード方法
+## ダウンロード方法
+
 ```
 cd ~/ros2_ws/src
 git clone https://github.com/Cocon4tus/mypkg
@@ -39,5 +40,6 @@ ros2 launch mypkg battery.launch.py
 - ubuntu　22.04
 
 ## ライセンス
-- 
--
+-  このソフトウェアパッケージは、3条項BSDライセンスの下、再頒布及びしようが許可されています。
+- © 2025 Kotaro Sato
+
