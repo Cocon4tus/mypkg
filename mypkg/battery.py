@@ -18,7 +18,7 @@ class BatteryPublisher(Node):
         battery = psutil.sensors_battery()
         if battery is not None:
             msg = Int32()
-            msg.data = int(battery.percent)
+            msg.data = int(psutil.sensors_battery().percent)
             self.publisher_.publish(msg)
             # ログ出力（info）を消すことで「沈黙」を実現
         else:
