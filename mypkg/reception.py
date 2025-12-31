@@ -23,10 +23,10 @@ class BatterySubscriber(Node):
         level = msg.data
         if level <= 20:
             
-            self.get_logger().warn(f'【警告】充電が少ないよ！現在：{level}%')
+            self.get_logger().warn(f'warning{level}%')
         else:
             
-            self.get_logger().info(f'バッテリー残量は正常です：{level}%')
+            self.get_logger().info(f'{level}%')
 
 def main(args=None):
     rclpy.init(args=args)

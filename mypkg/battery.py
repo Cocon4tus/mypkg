@@ -32,9 +32,9 @@ class BatteryPublisher(Node):
             
             self.publisher_.publish(msg)
             
-            self.get_logger().info(f'現在のバッテリー残量: {msg.data}%')
+            self.get_logger().info(f'{msg.data}%')
         else:
-            self.get_logger().error('バッテリー情報を取得できませんでした')
+            self.get_logger().error(...)
 
 def main(args=None):
     rclpy.init(args=args)
