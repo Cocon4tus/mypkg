@@ -9,10 +9,9 @@ jobs:
       - name: build and test
         shell: bash
         run: |
-          apt-get update -qq || true
-          apt-get install -y python3-psutil
-          rsync -av ./ /root/ros2_ws/src/mypkg/
+          apt-get update -qq > /dev/null 2>&1 || true
+          apt-get install -y python3-psutil > /dev/null 2>&1
+          rsync -av ./ /root/ros2_ws/src/mypkg/ > /dev/null 2>&1
           cd /root/ros2_ws
-          # テスト実行
-          bash ./src/mypkg/test/test.bash
+          bash src/mypkg/test/test.bash
 
