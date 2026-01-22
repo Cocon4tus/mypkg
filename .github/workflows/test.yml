@@ -4,22 +4,22 @@ jobs:
   test:
     runs-on: ubuntu-22.04
     container: ryuichiueda/ubuntu22.04-ros2:latest
-    # 保険として3分で強制シャットダウンするように設定
+    # 万が一の暴走を防ぐため、3分で強制終了
     timeout-minutes: 3
     steps:
       - uses: actions/checkout@v2
       - name: build and test
         shell: bash
         run: |
-          # 1. 依存関係の解決（エラーは無視し、表示も最小限に）
+          # 1. 依存関係の解決 (サイレント実行)
           apt-get update -qq > /dev/null 2>&1 || true
           apt-get install -y python3-psutil > /dev/null 2>&1
           
-          # 2. ワークスペースの構築
+          # 2. ワークスペースの確実な構築
           mkdir -p /root/ros2_ws/src/mypkg
           rsync -av ./ /root/ros2_ws/src/mypkg/ > /dev/null 2>&1
-          cd /root/ros2_ws
           
-          # 3. ビルドとテストの実行
-          # test.bash の戻り値(0 or 1)をそのままこのステップの結果にする
+          # 3. テストの実行
+          cd /root/ros2_ws
+          # スクリプトを実行し、戻り値(0 or 1)をGitHubに渡す
           bash src/mypkg/test/test.bash > /dev/null 2>&1
