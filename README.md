@@ -1,43 +1,45 @@
 # mypkg
-このパッケージは、PCのバッテリー残量を随時提示し、確認するROS2のパッケージです。
 
-## 機能
-- battery.py : `psutil` を使用してバッテリー残量を取得し、パブリッシュします。
-- reception.py : 受信した残量が20%以下のときに警告（WARN）を表示します。
-- battery.launch.py : 送信・受信の両方のノードを一度に起動します。
+リストからランダムに行動を選択し、通信を行うROS 2パッケージです。
 
-## 実行環境
-- ROS 2 Humble (Ubuntu 22.04)
-- Python 3.10
-- 依存ライブラリ: `psutil`
+## 概要
+このパッケージは、ユーザーが指定した複数の選択肢（行動リスト）の中から、ルーレットのように1つをランダムに選び出し、トピック通信を行う2つのノードで構成されています。
 
-## ダウンロード方法
+- **srotノード**: 送信側。コマンドライン引数で受け取ったリストから、2秒ごとにランダムに1つ選んで送信します。
+- **receptionノード**: 受信側。送信されたデータを受け取り、その単語だけをターミナルに表示します。
 
-```
-cd ~/ros2_ws/src
-git clone https://github.com/Cocon4tus/mypkg
+
+
+## インストールとビルド
+ワークスペースの `src` ディレクトリにクローンした後、ビルドしてください。
+
+```bash
 cd ~/ros2_ws
 colcon build --packages-select mypkg
-```
-
-## 実行方法
-このパッケージはlaunchファイルで実行できるようになっています。
-```
 source install/setup.bash
-ros2 launch mypkg battery.launch.py
 ```
-実行結果
+## 実行方法
+-　このシステムは送信側と受信側で二つのターミナルを使用します。
+### 1.送信ノードの起動
+- ターミナル1で、選択肢にしたい単語を引数として渡します。
 ```
-[INFO] [launch]: Default logging verbosity is set to INFO
-[INFO] [battery-1]: process started with pid [298722]
-[INFO] [reception-2]: process started with pid [298724]
-[reception-2] [INFO] [1767190637.537391095] [battery_subscriber]: Start
-[reception-2] [INFO] [1767190638.529133075] [battery_subscriber]: 72
+ros2 run mypkg srot 読書 筋トレ 掃除 昼寝 散歩
 ```
-このプログラムはCtrl+Cを入力すると終了します。
-
+### 2.受信ノードの起動
+- ターミナル2を開き、環境を読み込んでから実行します。
+```
+source ~/ros2_ws/install/setup.bash
+ros2 run mypkg receptio
+```
+## 実行結果
+- 成功すると、受信側のターミナルに以下のように単語だけが2秒おきに表示されます。
+```
+掃除
+読書
+昼寝
+```
 ## テスト環境
-- ubuntu　22.04
+- ubuntu22.04
 
 ## ライセンス
 -  このソフトウェアパッケージは、3条項BSDライセンスの下、再頒布及びしようが許可されています。
