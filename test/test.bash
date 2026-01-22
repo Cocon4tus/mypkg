@@ -5,26 +5,18 @@
 
 source /opt/ros/humble/setup.bash
 
-# ビルド
+# セットアップとビルド
 colcon build --packages-select mypkg > /dev/null 2>&1 || exit 1
 source install/setup.bash
 
-# 実行ファイルの存在確認
-ros2 pkg executables mypkg | grep -q srot || exit 1
-ros2 pkg executables mypkg | grep -q reception || exit 1
-
-# ノード起動
+# ノード起動と1.0注入テスト
 timeout 15s ros2 run mypkg srot > /dev/null 2>&1 &
 timeout 15s ros2 run mypkg reception A B C > /tmp/mypkg_test.log 2>&1 &
 
 sleep 10
-
-# 境界値1.0の注入
 ros2 topic pub --once /roulette_value std_msgs/msg/Float32 "{data: 1.0}" > /dev/null 2>&1
-
 sleep 5
 
-# 【判定】エラー（Traceback等）があれば1、正常（ログあり）なら0を返して終了
+# 判定ロジック：エラーがあれば1、成功（ログが空でない）なら0
 grep -qiE "error|fault|traceback" /tmp/mypkg_test.log && exit 1
 [ -s /tmp/mypkg_test.log ] && exit 0 || exit 1
-

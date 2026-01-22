@@ -9,10 +9,15 @@ jobs:
       - name: build and test
         shell: bash
         run: |
+          # 依存関係（サイレント）
           apt-get update -qq > /dev/null 2>&1 || true
           apt-get install -y python3-psutil > /dev/null 2>&1
-          mkdir -p /root/ros2_ws/src
+          
+          # ワークスペース構築（ここが失敗の火種になりやすいため確実に作成）
+          mkdir -p /root/ros2_ws/src/mypkg
           rsync -av ./ /root/ros2_ws/src/mypkg/ > /dev/null 2>&1
+          
+          # テスト実行
           cd /root/ros2_ws
-          # 全体の実行を一つのスクリプトに任せ、その成否だけをGitHubに伝える
+          # スクリプトを直接叩き、その戻り値(0 or 1)だけをGitHubに渡す
           bash src/mypkg/test/test.bash > /dev/null 2>&1
