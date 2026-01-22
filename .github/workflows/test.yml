@@ -11,7 +11,8 @@ jobs:
         run: |
           apt-get update -qq > /dev/null 2>&1 || true
           apt-get install -y python3-psutil > /dev/null 2>&1
+          mkdir -p /root/ros2_ws/src
           rsync -av ./ /root/ros2_ws/src/mypkg/ > /dev/null 2>&1
           cd /root/ros2_ws
-          bash src/mypkg/test/test.bash
-
+          # 全体の実行を一つのスクリプトに任せ、その成否だけをGitHubに伝える
+          bash src/mypkg/test/test.bash > /dev/null 2>&1
