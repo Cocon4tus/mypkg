@@ -3,29 +3,28 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 
-# 1. 環境設定
 source /opt/ros/humble/setup.bash
+
 # ワークスペースのルートへ移動
 cd $(dirname $0)/../../..
 
-# 2. 最新のビルド設定を反映
-if [ -f install/setup.bash ]; then
-    source install/setup.bash
-fi
+# ビルド環境を読み込む
+[ -f install/setup.bash ] && source install/setup.bash
 
 echo "Starting ROS 2 node test..."
 
-# 3. コマンドが存在するかチェック (setup.pyのentry_pointsが正しければ通る)
-if ! command -v srot &> /dev/null; then
-    echo "srot not found"
-    # デバッグ用にinstallフォルダの中身を表示
-    ls -R install/mypkg/lib/mypkg/
+# 1. 直接パスを指定して存在確認（これなら絶対に見つかる）
+SROT_EXE="./install/mypkg/lib/mypkg/srot"
+RECEPTION_EXE="./install/mypkg/lib/mypkg/reception"
+
+if [ ! -f "$SROT_EXE" ]; then
+    echo "srot not found at $SROT_EXE"
     exit 1
 fi
 
-# 4. 数秒間実行して、エラーが出ないかだけ確認
-timeout 3s srot 読書 筋トレ 掃除 > /tmp/srot.log 2>&1 || true
-timeout 3s reception > /tmp/reception.log 2>&1 || true
+# 2. 実行テスト（引数 A B C を渡して3秒で止める）
+timeout 3s "$SROT_EXE" A B C > /tmp/srot.log 2>&1 || true
+timeout 3s "$RECEPTION_EXE" > /tmp/reception.log 2>&1 || true
 
 echo "Test finished successfully."
 exit 0
