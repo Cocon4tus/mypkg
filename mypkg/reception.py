@@ -4,30 +4,27 @@
 
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import Float32
-import sys
+from std_msgs.msg import String
 
-
-class ReceptionEngine(Node):
+class DecisionDisplay(Node):
     def __init__(self):
-
         super().__init__('reception')
-        self.subscription = self.create_subscription(Float32, 'roulette_value', self.listener_callback, 10)
-        self.choices = sys.argv[1:]
+        self.create_subscription(String, 'next_action', self.callback, 10)
 
-    def listener_callback(self, msg):
-        index = int(msg.data * len(self.choices))
-        selected = self.choices[index]
-        
-        #self.get_logger().info(f'--- 抽選結果 ---')
-        self.get_logger().info(f'{selected}')
+    def callback(self, msg):
+        # 単語だけを表示
+        print(msg.data, flush=True)
 
-def main(args=None):
-    rclpy.init(args=args)
+def main():
+    rclpy.init()
     node = DecisionDisplay()
     try:
         rclpy.spin(node)
     except KeyboardInterrupt:
         pass
-    node.destroy_node()
-    rclpy.shutdown()
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()

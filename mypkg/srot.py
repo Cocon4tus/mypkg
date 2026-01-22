@@ -5,24 +5,35 @@
 
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import Float32
-import random
+from std_msgs.msg import String
 import sys
+import random
 
 class RouletteEngine(Node):
     def __init__(self):
-        super().__init__('roulette_engine')
-        self.publisher_ = self.create_publisher(Float32, 'roulette_value', 10)
+        super().__init__('srot')
+        # 引数があればそれをリストにし、なければデフォルトをセット
+        self.actions = sys.argv[1:] if len(sys.argv) > 1 else ["A", "B", "C"]
+        self.pub = self.create_publisher(String, 'next_action', 10)
         self.timer = self.create_timer(2.0, self.timer_callback)
 
     def timer_callback(self):
-        msg = Float32()
-        msg.data = random.random()
-        self.publisher_.publish(msg)
-        self.get_logger().info(f'{msg.data:.4f}')
+        msg = String()
+        msg.data = random.choice(self.actions)
+        self.pub.publish(msg)
+        # 自分の画面にも何を送ったか表示
+        self.get_logger().info(msg.data)
 
-def main(args=None):
-    rclpy.init(args=args)
-    rclpy.spin(RouletteEngine())
-    rclpy.shutdown()
+def main():
+    rclpy.init()
+    node = RouletteEngine()
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
 
+if __name__ == '__main__':
+    main()
