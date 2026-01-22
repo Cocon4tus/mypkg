@@ -10,15 +10,17 @@ jobs:
       - name: build and test
         shell: bash
         run: |
-          # 1. ワークスペース構築（rsyncのみで高速化）
-          mkdir -p /root/ros2_ws/src/mypkg
-          rsync -av ./ /root/ros2_ws/src/mypkg/
+          # 1. ワークスペース構築（コピー先を修正）
+          mkdir -p /root/ros2_ws/src
+          # プロジェクトそのものを src の下にコピーするように変更
+          cp -r . /root/ros2_ws/src/mypkg
           
-          # 2. ビルドと最小限の実行テスト
+          # 2. ビルド
           cd /root/ros2_ws
           . /opt/ros/humble/setup.sh
+          # 一度キャッシュを消してクリーンビルド
           colcon build --packages-select mypkg
           . install/setup.bash
           
-          # 3. テストスクリプト実行（中身を極限まで薄くしたもの）
+          # 3. テスト実行
           bash src/mypkg/test/test.bash
