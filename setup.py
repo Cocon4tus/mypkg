@@ -29,7 +29,7 @@ setup(
         'console_scripts': [
             'battery = mypkg.battery:main',
             'reception = mypkg.reception:main',
-            'srot.py = mypkg.srot:main',
+            'srot = mypkg.srot:main',
         ],
     },
 )
