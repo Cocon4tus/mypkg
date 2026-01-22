@@ -13,7 +13,6 @@ jobs:
           apt-get install -y python3-psutil
           rsync -av ./ /root/ros2_ws/src/mypkg/
           cd /root/ros2_ws
-          source /opt/ros/humble/setup.bash
-         
+          # テスト実行
           bash ./src/mypkg/test/test.bash
 
