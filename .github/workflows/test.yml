@@ -9,9 +9,8 @@ jobs:
       - name: build and test
         shell: bash
         run: |
-          apt-get update && apt-get install -y python3-psutil
+          apt-get update -qq && apt-get install -y python3-psutil
           rsync -av ./ /root/ros2_ws/src/mypkg/
           cd /root/ros2_ws
           source /opt/ros/humble/setup.bash
-          bash -xv ./src/mypkg/test/test.bash
-
+          bash ./src/mypkg/test/test.bash
