@@ -4,22 +4,22 @@ jobs:
   test:
     runs-on: ubuntu-22.04
     container: ryuichiueda/ubuntu22.04-ros2:latest
-    # 保険として3分でジョブ自体を強制終了させる
-    timeout-minutes: 3
+    # 3分ではなく15分に設定。これで時間切れキャンセルを防ぎます。
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v2
       - name: build and test
         shell: bash
         run: |
-          # 1. 依存関係（サイレント実行）
-          apt-get update -qq > /dev/null 2>&1 || true
-          apt-get install -y python3-psutil > /dev/null 2>&1
+          # 1. 依存関係のインストール（進捗を表示する）
+          apt-get update
+          apt-get install -y python3-psutil
           
           # 2. ワークスペースの構築
           mkdir -p /root/ros2_ws/src/mypkg
-          rsync -av ./ /root/ros2_ws/src/mypkg/ > /dev/null 2>&1
+          rsync -av ./ /root/ros2_ws/src/mypkg/
           
-          # 3. テスト実行
+          # 3. テストの実行
           cd /root/ros2_ws
-          # スクリプトを叩き、その戻り値(0 or 1)をGitHubに届ける
-          bash src/mypkg/test/test.bash > /dev/null 2>&1
+          # 内部で colcon build などを行う
+          bash src/mypkg/test/test.bash
